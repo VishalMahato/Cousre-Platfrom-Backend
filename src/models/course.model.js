@@ -40,3 +40,6 @@ courseSchema.methods.applyDiscount = function(discountPercentage) {
     }
     return this.coursePrice;
 };
+
+const Course = mongoose.model("Course", userSchema);
+module.exports = Course;

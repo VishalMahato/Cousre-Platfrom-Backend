@@ -55,12 +55,24 @@ userSchema.methods.isPasswordCorrect = async function (password) {
  * Generates a JWT token that is valid for 1 hour, containing the user's ID in the payload.
  * @returns {string} The generated JWT token.
  */
-userSchema.methods.generateToken = function () {
+userSchema.methods.generateAccessToken = function () {
 	return jwt.sign(
 		{ _id: this._id, email: this.email },
 		process.env.JWT_SECRET,
 		{ expiresIn: "1h" }
 	);
+};
+
+/**
+ * Generates a JWT token that is valid for 7 days, containing the user's ID and email in the payload.
+ * @returns {string} The generated JWT token.
+ */
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        { _id: this._id, email: this.email },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+    );
 };
 
 // Middleware for hashing password before saving
