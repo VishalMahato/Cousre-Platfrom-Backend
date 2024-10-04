@@ -27,7 +27,7 @@ const userSchema = new Schema({
 	},
 	type: {
 		type: String,
-		enum: ["admin", "Creator", "student"],
+		enum: ["admin", "creator", "student"],
 		required: true,
 		trim: true,
 	},
@@ -48,6 +48,7 @@ const userSchema = new Schema({
  * @returns {Promise<boolean>} true if the password is correct, false otherwise.
  */
 userSchema.methods.isPasswordCorrect = async function (password) {
+
 	return await bcrypt.compare(password, this.passwordHash);
 };
 
@@ -58,8 +59,8 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 userSchema.methods.generateAccessToken = function () {
 	return jwt.sign(
 		{ _id: this._id, email: this.email },
-		process.env.JWT_SECRET,
-		{ expiresIn: "1h" }
+		process.env.JWT_ACCESS_SECRET,
+		{ expiresIn: "30s" }
 	);
 };
 

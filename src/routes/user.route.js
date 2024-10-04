@@ -1,9 +1,17 @@
 const {userSchema} = require('../models/user.model')
 const {Router} = require('express')
-const {registerUser} = require('../controllers/user.controller')
+const {registerUser, loginUser} = require('../controllers/user.controller')
 
-const UserRouter =  Router();
+const userRouter =  Router();
 
-UserRouter.post(
-    '/signup', 
+userRouter.post(
+    '/signup', registerUser
 )
+
+userRouter.post(
+    '/signin', loginUser
+)
+
+module.exports = {
+    userRouter,
+}

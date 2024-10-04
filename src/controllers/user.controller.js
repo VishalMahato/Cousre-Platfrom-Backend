@@ -9,21 +9,23 @@ const { z } = require("zod");
  * @returns {Promise<void>}
  */
 const registerUser = async (req, res) => {
-	const { fullname, email, password } = req.body;
-9
-    const userSchema = z.object({
-        fullName: z.string().min(1, "Name is required"),
-        email: z.string().email("Invalid email address"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
-        type: z.enum(["admin", "Creator", "student"]),
-    });
-    const validatedData = userSchema.parse(req.body);
+    req.body.type = req.body.type.toLowerCase();
+	const { fullName, email, password, type } = req.body;
+	const lowerCaseType = type.toLowerCase();
 
-    if(!validatedData){
-        return res.status(400).json({
-            message: "Invalid data",
-        })
-    }
+	const userSchema = z.object({
+		fullName: z.string().min(1, "Name is required").max(50),
+		email: z.string().email("Invalid email address"),
+		password: z.string().min(8, "Password must be at least 8 characters"),
+		type: z.enum(["admin", "creator", "student"]).transform((val) => val.toLowerCase()),
+	});
+	const validatedData = userSchema.parse(req.body);
+
+	if (!validatedData) {
+		return res.status(400).json({
+			message: "Invalid data",
+		});
+	}
 
 	const existingUser = await User.findOne({ email });
 
@@ -34,22 +36,25 @@ const registerUser = async (req, res) => {
 	}
 	try {
 		const newUser = new User({
-			fullname,
+			fullName,
 			email,
-			password,
+			passwordHash : password,
+			type : lowerCaseType,
 		});
-		await newUser.save();
+		
 
-        const accessToken = newUser.generateAccessToken();
-        const refreshToken = newUser.generateRefreshToken();
+		const accessToken = newUser.generateAccessToken();
+		const refreshToken = newUser.generateRefreshToken();
 
-        return res.status(201).json({
-            message: "User registered successfully",
-            accessToken,
-            refreshToken,
-        });
+        await newUser.save();
 
+		return res.status(201).json({
+			message: "User registered successfully",
+			accessToken,
+			refreshToken,
+		});
 	} catch (error) {
+        console.log(error)
 		return res.status(500).json({
 			message: "Internal server error",
 		});
@@ -65,12 +70,14 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
 	const { email, password } = req.body;
 	try {
-		const existingUser = await User.findOne({ email });
+		const existingUser = await User.findOne({ email }).select('+passwordHash');
 		if (!existingUser) {
 			return res.status(401).json({
 				message: "Invalid credentials",
 			});
 		}
+        console.log(existingUser)
+    
 		const isPasswordValid = await existingUser.isPasswordCorrect(password);
 
 		if (!isPasswordValid) {
@@ -79,16 +86,15 @@ const loginUser = async (req, res) => {
 			});
 		}
 		const accessToken = existingUser.generateAccessToken();
-        res.status(200).json({ result: existingUser, accessToken,refreshToken });
-
+        const refreshToken= existingUser.generateRefreshToken();
+		res.status(200).json({  accessToken, refreshToken });
 	} catch (error) {
+        console.log(error)
 		res.status(500).json({ message: "Something went wrong" });
 	}
 };
 
-
-
 module.exports = {
-    registerUser,
-    loginUser,
+	registerUser,
+	loginUser,
 };

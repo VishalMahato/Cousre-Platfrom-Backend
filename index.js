@@ -2,15 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const { connectDB } = require("./src/db/index.db.js");
+const {userRouter} = require("./src/routes/user.route.js")
 
-dotenv.config({
-	path: "./.env",
-});
+dotenv.config();
 
 const app = express();
 
 app.use(express.json()) 
 
+/**
+ * Starts the Express application by connecting to the database and
+ * starting the server to listen on the given port.
+ * @throws {Error} If there is an error connecting to the database.
+ */
 async function startApp() {
 	try {
 		await connectDB();
@@ -27,3 +31,5 @@ async function startApp() {
 startApp();
 
 //Routes 
+app.use("/api/v1/users", userRouter)
+
