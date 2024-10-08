@@ -1,12 +1,12 @@
 const express = require("express");
 const {
-  createOrder,
+  buyCourse,
   verifyPayment,
 } = require("../controllers/payment.controller");
 
 const paymentRouter = express.Router();
 // Route to create an order
-router.post("/create-order", createOrder);
+router.post("/buy-course", buyCourse);
 
 // Route to verify payment
 router.post("/verify-payment", verifyPayment);
