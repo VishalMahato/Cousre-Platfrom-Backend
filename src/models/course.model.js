@@ -19,6 +19,11 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
+    courseTag: {
+      type: [String],
+      required: false,
+      index: true,
+    },
     coursePrice: {
       type: Number,
       required: true,

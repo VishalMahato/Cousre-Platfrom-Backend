@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/user.model");
+const { User } = require("../models/user.model");
 
 const verifyJWT = async (req, res, next) => {
   console.log("jwt started");
@@ -11,9 +11,7 @@ const verifyJWT = async (req, res, next) => {
     });
   }
   const token = authHeader.split(" ")[1];
-  console.log(token);
   jwt.verify(token, process.env.JWT_ACCESS_SECRET, async (err, decoded) => {
-    console.log(err + " - " + process.env.JWT_ACCESS_SECRET);
     if (err) return res.status(403); //Invalid Token
     const { _id } = decoded;
     const user = await User.findById(_id).select("-passwordHash");

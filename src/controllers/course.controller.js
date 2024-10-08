@@ -13,9 +13,12 @@ const createCourse = async (req, res) => {
   const courseSchema = z.object({
     courseName: z.string().min(1, "Course name is required"),
     courseDescription: z.string().min(1, "Course description is required"),
+    courseTag: z
+      .array(z.string())
+      .nonempty("At least one course tag is required"),
     coursePrice: z.number().positive("Course price must be a positive number"),
   });
-  const { courseName, courseDescription, coursePrice } = req.body;
+  const { courseName, courseDescription, courseTag, coursePrice } = req.body;
   try {
     // Validate request body using Zod
     const validatedData = courseSchema.parse(req.body);
@@ -28,6 +31,7 @@ const createCourse = async (req, res) => {
       courseName: courseName,
       creatorId: _id,
       courseDescription: courseDescription,
+      courseTag: courseTag,
       coursePrice: coursePrice,
     });
 
@@ -55,7 +59,24 @@ const createCourse = async (req, res) => {
     });
   }
 };
+// Function to get all courses
+const getAllCourses = async (req, res) => {
+  try {
+    console.log("entered function");
+    // Find all courses
+    const courses = await Course.find({}).select("-__v");
+    console.log(courses);
+    // Send a response to the client
+    return res.status(200).json({
+      message: "Courses retrieved successfully",
+      courses: courses,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error retrieving courses",
+    });
+  }
+};
 
-const buyCourse = async (req, res) => {};
-
-module.exports = { createCourse };
+module.exports = { getAllCourses, createCourse };

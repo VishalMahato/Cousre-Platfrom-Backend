@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const { connectDB } = require("./src/db/index.db.js");
 const { userRouter } = require("./src/routes/user.route.js");
 const { courseRouter } = require("./src/routes/course.route.js");
+const { paymentRouter } = require("./src/routes/payment.route");
 
 dotenv.config();
 console.log(process.env.PORT);
@@ -34,3 +35,4 @@ startApp();
 //Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/payment", paymentRouter);
