@@ -1,4 +1,4 @@
-const { userSchema } = require("../models/user.model");
+const { User } = require("../models/user.model");
 const { Router } = require("express");
 const { registerUser, loginUser } = require("../controllers/user.controller");
 

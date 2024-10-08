@@ -1,4 +1,4 @@
-const User = require("../models/user.model.js");
+const { User } = require("../models/user.model.js");
 const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 
@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
         message: "Invalid credentials",
       });
     }
-    console.log(existingUser);
+    // console.log(existingUser);
 
     const isPasswordValid = await existingUser.isPasswordCorrect(password);
 

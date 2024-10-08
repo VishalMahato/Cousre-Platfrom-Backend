@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : " nodemon index.js"
+    "dev": " nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
+    "razorpay": "^2.9.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {
